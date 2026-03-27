@@ -649,7 +649,8 @@
 
             function findSafeCutRow(idealY, searchPx) {
                 // Busca la fila más oscura dentro del rango [idealY - searchPx, idealY]
-                // Buscamos hacia atrás para no agregar contenido de la siguiente página
+                // Buscamos hacia atrás para no agregar contenido de la siguiente página.
+                // Si la fila ideal tiene >65% de fondo oscuro, la aceptamos de inmediato.
                 let bestY = idealY;
                 let bestDark = -1;
                 const from = Math.max(0, idealY - searchPx);
@@ -658,7 +659,7 @@
                     if (d > bestDark) {
                         bestDark = d;
                         bestY = y;
-                        if (d > 0.85) break; // fila casi completamente oscura, suficiente
+                        if (d > 0.65) break; // fila con suficiente fondo oscuro para cortar
                     }
                 }
                 return bestY;
@@ -672,8 +673,8 @@
 
                 // Calcular límite ideal de esta página
                 const idealEnd = yOffset + pageHeightPx;
-                // Buscar un corte natural en los últimos 80px antes del límite
-                const safeCut = idealEnd >= canvasH ? canvasH : findSafeCutRow(Math.min(idealEnd, canvasH - 1), 80);
+                // Buscar un corte natural en los últimos 250px antes del límite
+                const safeCut = idealEnd >= canvasH ? canvasH : findSafeCutRow(Math.min(idealEnd, canvasH - 1), 250);
                 const sliceH = safeCut - yOffset;
 
                 const pageCanvas = document.createElement('canvas');
