@@ -595,16 +595,24 @@
             const PDF_W_PX = 842 * SCALE;  // 297mm en 72dpi * escala
             const PDF_H_PX = 595 * SCALE;  // 210mm en 72dpi * escala
 
+            // ── Scroll al top para capturar desde el inicio ──
+            window.scrollTo(0, 0);
+            await new Promise(r => setTimeout(r, 300)); // Esperar repintado
+
             // Seleccionar el bloque principal del contenido
             const contentEl = document.querySelector('body');
+            const fullHeight = document.documentElement.scrollHeight;
             const canvas = await html2canvas(contentEl, {
                 scale: SCALE,
                 useCORS: true,
                 backgroundColor: '#0B132B',
                 windowWidth: 1280,
+                windowHeight: fullHeight,
                 scrollX: 0,
-                scrollY: -window.scrollY,
-                logging: false
+                scrollY: 0,
+                logging: false,
+                height: fullHeight,
+                y: 0
             });
 
             const pdf = new jsPDF({
