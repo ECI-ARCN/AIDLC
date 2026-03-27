@@ -207,32 +207,13 @@
             background: #4DFFFF;
             box-shadow: 0 0 15px rgba(77, 255, 255, 0.4);
         }
-
-        /* ── PDF Compact Mode ── */
-        .pdf-mode {
-            padding: 0 !important;
-            margin: 0 !important;
-            background-color: #0B132B !important;
-        }
-        .pdf-mode header { margin-bottom: 2rem !important; }
-        .pdf-mode main { gap: 1.5rem !important; }
-        .pdf-mode section { 
-            margin-bottom: 2rem !important; 
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-        .pdf-mode .card { padding: 1.5rem !important; }
-        .pdf-mode .chart-container { height: 350px !important; }
-        .pdf-mode h1 { font-size: 2.2rem !important; }
-        .pdf-mode h2 { font-size: 1.4rem !important; margin-bottom: 1rem !important; }
-        .pdf-mode .p-10 { padding: 1.5rem !important; }
     </style>
 </head>
 
 <body class="antialiased min-h-screen p-4 md:p-8">
 
     <!-- Navegación -->
-    <nav class="glass-nav py-4 px-6 md:px-12 flex justify-between items-center -mx-4 md:-mx-8 -mt-4 md:-mt-8 mb-8 rounded-b-lg md:rounded-b-2xl">
+    <nav id="main-nav" class="glass-nav py-4 px-6 md:px-12 flex justify-between items-center -mx-4 md:-mx-8 -mt-4 md:-mt-8 mb-8 rounded-b-lg md:rounded-b-2xl">
         <div class="text-xl font-black tracking-tighter">
             <span class="text-white">AI</span><span style="color:#4DFFFF">DLC</span>
         </div>
@@ -478,61 +459,110 @@
 
     <div id="metadata-container" style="display:none;"
         data-palette="Vibrant Cyberpunk Night (#0B132B, #1C2541, #4DFFFF, #FF3366, #FFD166, #9D4EDD)"
-        data-plan="Introduccion KPIs -> Flujo de Trabajo y Chart Barras Apiladas (Comparar esfuerzo) -> Tabla Metodologias -> Tarjetas Anti-patrones -> Radar Chart Herramientas y Patrones"
-        data-charts="Chart 1: Bar Chart (Meta: Comparar) Muestra como el esfuerzo migra de codigo a revision. Chart 2: Radar Chart (Meta: Organizar/Relacionar) Muestra madurez de herramientas por fase."
-        data-compliance="Explicit confirmation: NEITHER Mermaid JS NOR SVG were used anywhere in this HTML document.">
+        data-plan="Introduccion KPIs -> Flujo de Trabajo y Chart Barras Apiladas -> Tabla Metodologias -> Tarjetas Anti-patrones -> Radar Chart Herramientas"
+        data-charts="Chart 1: Bar Chart. Chart 2: Radar Chart.">
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         async function exportToPDF() {
-            const nav = document.querySelector('.glass-nav');
+            const { jsPDF } = window.jspdf;
+            const nav = document.getElementById('main-nav');
             const stack = document.querySelector('.profile-stack');
             const overlays = document.querySelectorAll('.modal-overlay');
+            const pdfBtn = document.getElementById('pdf-btn');
             const gradientTitle = document.querySelector('.bg-clip-text');
             
-            // Activar modo PDF (compacto)
-            document.body.classList.add('pdf-mode');
-
-            // Ocultar elementos UI
+            // Ocultar elementos de UI
             if (nav) nav.style.display = 'none';
             if (stack) stack.style.display = 'none';
+            if (pdfBtn) pdfBtn.style.display = 'none';
             overlays.forEach(m => m.style.display = 'none');
 
             // Corrección para text-gradient
             let originalClasses = '';
             if (gradientTitle) {
                 originalClasses = gradientTitle.className;
-                gradientTitle.className = 'text-[#4DFFFF] font-extrabold';
+                gradientTitle.classList.remove('bg-clip-text', 'text-transparent', 'bg-gradient-to-r', 'from-[#4DFFFF]', 'to-[#9D4EDD]');
+                gradientTitle.style.color = '#4DFFFF';
             }
 
-            const opt = {
-                margin:       [10, 0, 10, 0],
-                filename:     'Infografia_AIDLC_2026.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { 
-                    scale: 2, 
-                    useCORS: true, 
-                    backgroundColor: '#0B132B',
-                    windowWidth: 1200
-                },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape', compress: true },
-                pagebreak:    { mode: ['css', 'legacy'] }
-            };
+            // A4 Landscape en mm y px (escala x2 para alta calidad)
+            const PDF_W_MM = 297;
+            const PDF_H_MM = 210;
+            const SCALE = 2;
+            const PDF_W_PX = 842 * SCALE;  // 297mm en 72dpi * escala
+            const PDF_H_PX = 595 * SCALE;  // 210mm en 72dpi * escala
 
-            try {
-                const worker = html2pdf().set(opt).from(document.body).toPdf().get('pdf');
-                await worker.save();
-            } catch (err) {
-                console.error('Error al generar PDF: ', err);
-            } finally {
-                // Restaurar estilos y UI
-                document.body.classList.remove('pdf-mode');
-                if (nav) nav.style.display = 'flex';
-                if (stack) stack.style.display = 'flex';
-                overlays.forEach(m => m.style.display = 'flex');
-                if (gradientTitle) {
-                    gradientTitle.className = originalClasses;
+            // Seleccionar el bloque principal del contenido
+            const contentEl = document.querySelector('body');
+            const canvas = await html2canvas(contentEl, {
+                scale: SCALE,
+                useCORS: true,
+                backgroundColor: '#0B132B',
+                windowWidth: 1280,
+                scrollX: 0,
+                scrollY: -window.scrollY,
+                logging: false
+            });
+
+            const pdf = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const imgData = canvas.toDataURL('image/jpeg', 0.95);
+            const canvasW = canvas.width;
+            const canvasH = canvas.height;
+
+            // Cuantos px corresponden a una pagina A4 en el canvas generado
+            const pageHeightPx = Math.floor(canvasH * (PDF_W_PX / canvasW) / (PDF_W_MM / PDF_H_MM));
+
+            let yOffset = 0;
+            let pageNum = 0;
+
+            while (yOffset < canvasH) {
+                if (pageNum > 0) pdf.addPage();
+
+                // Crear canvas temporal con el trozo de esta pagina
+                const sliceH = Math.min(pageHeightPx, canvasH - yOffset);
+                const pageCanvas = document.createElement('canvas');
+                pageCanvas.width = canvasW;
+                pageCanvas.height = pageHeightPx;
+                const ctx = pageCanvas.getContext('2d');
+                ctx.fillStyle = '#0B132B';
+                ctx.fillRect(0, 0, canvasW, pageHeightPx);
+                ctx.drawImage(canvas, 0, yOffset, canvasW, sliceH, 0, 0, canvasW, sliceH);
+
+                const pageData = pageCanvas.toDataURL('image/jpeg', 0.95);
+                // Margen de 8mm a cada lado
+                const margin = 8;
+                pdf.addImage(pageData, 'JPEG', margin, margin, PDF_W_MM - margin * 2, PDF_H_MM - margin * 2);
+
+                yOffset += pageHeightPx;
+                pageNum++;
+            }
+
+            // Eliminar ultima pagina si quedo casi en blanco (menos del 10% de contenido)
+            if (pageNum > 1) {
+                const lastSlice = canvasH - (pageNum - 1) * pageHeightPx;
+                if (lastSlice < pageHeightPx * 0.1) {
+                    pdf.deletePage(pageNum);
                 }
+            }
+
+            pdf.save('Infografia_AIDLC_2026.pdf');
+
+            // Restaurar UI
+            if (nav) nav.style.display = 'flex';
+            if (stack) stack.style.display = 'flex';
+            if (pdfBtn) pdfBtn.style.display = 'flex';
+            overlays.forEach(m => m.style.display = 'flex');
+            if (gradientTitle) {
+                gradientTitle.className = originalClasses;
+                gradientTitle.style.color = '';
             }
         }
 
