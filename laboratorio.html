@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio Práctico AIDLC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap');
+        
+        :root {
+            --color-bg-deep: #050505;
+            --color-card-bg: rgba(11, 19, 43, 0.7);
+            --color-neon-cyan: #4DFFFF;
+            --color-neon-pink: #FF3366;
+            --color-neon-yellow: #FFD166;
+            --color-neon-purple: #9D4EDD;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-bg-deep);
+            color: #E0E1E5;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ── Navbar ── */
+        .glass-nav {
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(77, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .nav-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: var(--color-neon-cyan);
+            background: rgba(77, 255, 255, 0.1);
+        }
+        .nav-link.active {
+            color: #050505;
+            background: var(--color-neon-cyan);
+            box-shadow: 0 0 15px rgba(77, 255, 255, 0.4);
+        }
+
+        /* ── Cards ── */
+        .glass-card {
+            background: var(--color-card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+        
+        .phase-header {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .code-box {
+            background: rgba(0, 0, 0, 0.6);
+            border-left: 4px solid var(--color-neon-cyan);
+            padding: 1rem;
+            font-family: monospace;
+            color: #a0aec0;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navegación -->
+    <nav class="glass-nav py-4 px-6 md:px-12 flex justify-between items-center">
+        <div class="text-xl font-black tracking-tighter">
+            <span class="text-white">AI</span><span style="color:var(--color-neon-cyan)">DLC</span>
+        </div>
+        <div class="flex gap-2 md:gap-4">
+            <a href="infografia.html" class="nav-link">Infografía</a>
+            <a href="laboratorio.html" class="nav-link active">Laboratorio</a>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="max-w-5xl mx-auto px-6 py-12">
+        <header class="text-center mb-16">
+            <h1 class="text-4xl md:text-6xl font-black mb-4">
+                El <span style="color:var(--color-neon-pink); text-shadow:0 0 20px rgba(255,51,102,0.4);">Efecto Mariposa</span> del Código
+            </h1>
+            <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto">
+                Bienvenidos al laboratorio. Aquí aprenderán por qué "Vibe Coding" (programar solo con corazonadas y prompts vagos) es peligroso, y cómo aplicar el <strong>Spec-Driven Development</strong> los salvará de la deuda técnica extrema.
+            </p>
+        </header>
+
+        <!-- Contexto -->
+        <section class="glass-card p-8 md:p-10 mb-10 border-t-2 border-[#9D4EDD]">
+            <h2 class="text-2xl font-bold text-white mb-4">🎯 Su Misión (El Reto)</h2>
+            <p class="text-gray-300 text-sm md:text-base">
+                Van a construir un componente web puramente <strong>Frontend (HTML, CSS y JavaScript)</strong> que no requiere Bases de Datos ni backend. El componente es una <em>"Calculadora Ágil de Huella de Carbono"</em>.
+                <br><br>
+                Solo necesitan tener abierto un bloc de notas, Visual Studio Code o el navegador, y su asistente de IA favorito (ChatGPT, Copilot, Cursor o Gemini).
+            </p>
+        </section>
+
+        <!-- Fase 1 -->
+        <section class="glass-card p-8 md:p-10 mb-10 border-t-2 border-[#FF3366]">
+            <div class="phase-header bg-[#FF3366]/20 text-[#FF3366] border border-[#FF3366]/40">Fase 1: Vibe Coding</div>
+            <h2 class="text-3xl font-black text-white mb-4">La Trampa del "Vibe Coding"</h2>
+            <p class="text-gray-300 mb-6">
+                El <em>Vibe Coding</em> ocurre cuando le hablan a la IA como si fuera magia, sin darle especificaciones de arquitectura. Vamos a intentarlo para ver cómo falla.
+            </p>
+            
+            <div class="space-y-6">
+                <div>
+                    <h3 class="font-bold text-white">Paso 1: El Prompt Perezoso</h3>
+                    <p class="text-sm text-gray-400">Copien este texto exacto en su IA y generen la página:</p>
+                    <div class="code-box text-[#FF3366]">
+                        "Hazme una página web bonita para una calculadora de huella de carbono. Que calcule cosas y se vea moderna."
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-white">Paso 2: Prueben el Código</h3>
+                    <p class="text-sm text-gray-400">Copien el código en un archivo <code>index.html</code> y ábranlo en el navegador. Seguramente se verá bien a la primera. "Parece mágico", ¿verdad?</p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-white">Paso 3: ¡El Efecto Mariposa! 🦋💥</h3>
+                    <p class="text-sm text-gray-400">Ahora viene el problema. Pídanle a la IA en el mismo chat que haga un pequeño cambio estético pero ambiguo:</p>
+                    <div class="code-box text-[#FF3366]">
+                        "Cámbiale el diseño para que tenga tema oscuro, añade un gráfico interactivo súper complejo y pon los botones de color morado."
+                    </div>
+                </div>
+
+                <div class="bg-[#0B132B] p-6 rounded-lg border border-[#FF3366]/30">
+                    <h4 class="font-bold text-[#FFD166] mb-2">🤔 Reflexión de Equipo:</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-2">
+                        <li>¿El diseño anterior se rompió por completo?</li>
+                        <li>¿La IA añadió inesperadamente librerías externas (como Chart.js, React o Tailwind) asumiendo herramientas que no pidieron?</li>
+                        <li>¿El código es ahora inentendible (Frankenstein Code)?</li>
+                    </ul>
+                    <p class="mt-4 text-xs font-bold text-[#FF3366] uppercase tracking-widest">Lección: Sin restricciones, la IA asume la arquitectura por ustedes. Y suele equivocarse.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fase 2 -->
+        <section class="glass-card p-8 md:p-10 mb-10 border-t-2 border-[#4DFFFF]">
+            <div class="phase-header bg-[#4DFFFF]/20 text-[#4DFFFF] border border-[#4DFFFF]/40">Fase 2: Spec-Driven Development</div>
+            <h2 class="text-3xl font-black text-white mb-4">Escribiendo Especificaciones de Ingeniería</h2>
+            <p class="text-gray-300 mb-6">
+                Abran un CHAT NUEVO. Esta vez no le pediremos "algo bonito". Le entregaremos Arquitectura, Restricciones y Historias de Usuario claras guiando las decisiones de diseño.
+            </p>
+            
+            <div class="space-y-6">
+                <div>
+                    <h3 class="font-bold text-white">Paso 1: El Mega-Prompt (Contexto + Restricciones)</h3>
+                    <p class="text-sm text-gray-400">Utilicen esta estructura estricta para el desarrollo inicial:</p>
+                    <div class="code-box text-[#4DFFFF]">
+                        <strong>ROL:</strong> Eres un Ingeniero Frontend Senior.<br>
+                        <strong>CONTEXTO TECNOLÓGICO:</strong> Aplicación de una sola página (SPA). NO uses React, NO uses Vue, NO uses CDN de librerías de estilos. Usa única y exclusivamente HTML semántico, CSS puro (Vanilla) dentro de un bloque &lt;style&gt; y JavaScript puro en un bloque &lt;script&gt;.<br><br>
+                        <strong>RESTRICCIONES ARQUITECTÓNICAS:</strong> Todo el código debe venir en un solo archivo index.html fácil de copiar. Separa visualmente la lógica de JS del maquetado HTML.<br><br>
+                        <strong>HISTORIA DE USUARIO 1:</strong> Como usuario, quiero ver 3 campos numéricos (Kilómetros en auto, Horas de vuelo, Gasto en electricidad). Quiero un botón que al pulsarlo tome esos 3 valores, los sume y multiplique por 0.5, y muestre el "Total de Huella de Carbono en KG" en pantalla usando JavaScript, validando que los datos no estén vacíos. No añadas nada más.
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-white">Paso 2: Comparen Control vs Caos</h3>
+                    <p class="text-sm text-gray-400">Copien el código en su <code>index.html</code>. Ejecútenlo. Pídanle a la IA que añada funcionalidad paso a paso leyendo la siguiente historia de usuario en el chat:</p>
+                    <div class="code-box text-[#4DFFFF]">
+                        <strong>HISTORIA DE USUARIO 2:</strong> Ahora implementa un botón para "Cambiar a Modo Oscuro", que únicamente agregue la clase CSS ".dark-mode" al body. Usa colores oscuros estándar (#222 y #fff).
+                    </div>
+                </div>
+
+                <div class="bg-[#0B132B] p-6 rounded-lg border border-[#4DFFFF]/30">
+                    <h4 class="font-bold text-[#FFD166] mb-2">🤔 Reflexión de Equipo:</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-2">
+                        <li>Noten cómo el componente crece de forma modular e incremental sin romper el comportamiento interior.</li>
+                        <li>¿Por qué dar el 'Spec' (diseño técnico) antes evita el "Token Sprawl" o gasto de tokens asumiendo cosas?</li>
+                    </ul>
+                    <p class="mt-4 text-xs font-bold text-[#4DFFFF] uppercase tracking-widest">Lección: La Especificación ES el Nuevo Código. Tú diseñas, el Copiloto programa.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fase 3 -->
+        <section class="glass-card p-8 md:p-10 mb-10 border-t-2 border-[#9D4EDD]">
+            <div class="phase-header bg-[#9D4EDD]/20 text-[#9D4EDD] border border-[#9D4EDD]/40">Fase 3: Quality Gate (Orquestación)</div>
+            <h2 class="text-3xl font-black text-white mb-4">La IA también es Inspectora</h2>
+            <p class="text-gray-300 mb-6">
+                El ciclo AIDLC exige una Verificación antes del pase a producción (Deploy). Vamos a pedirle a la IA que se audite a sí misma.
+            </p>
+            
+            <div class="space-y-6">
+                <div>
+                    <h3 class="font-bold text-white">Paso Final: AI Red Teaming</h3>
+                    <p class="text-sm text-gray-400">Envíenle el código completo que acaban de generar junto con esta orden:</p>
+                    <div class="code-box text-[#FFD166]">
+                        "Cambia de rol. Ahora eres un experto en Aseguramiento de Calidad (QA) y Experiencia de Usuario (UX). Analiza mi código anterior. Encuentra posibles bugs si el usuario ingresa letras en vez de números, o si hay problemas de accesibilidad (contraste). Dime qué corregirías y refactoriza solo la parte afectada."
+                    </div>
+                </div>
+
+                <div class="bg-[#0B132B] p-6 rounded-lg border border-[#9D4EDD]/30">
+                    <h4 class="font-bold text-[#FFD166] mb-2">🏅 Conclusión del Cierre:</h4>
+                    <p class="text-sm text-gray-300">
+                        La IA es sumamente eficiente y rápida, pero necesita un marco de reglas (Guardrails) claras. El <strong>Vibe Coding</strong> es útil para prototipar rápido sin dolor, pero en entornos de ingeniería reales, el <strong>Spec-Driven Development</strong> es el estándar para asegurar el control sobre la arquitectura técnica.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>
