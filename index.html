@@ -545,7 +545,7 @@
 
     <!-- Floating Profile Button -->
     <div class="profile-stack">
-        <button class="profile-btn" onclick="window.open('infografia-pdf.html', '_blank')" title="Exportar PDF profesional" style="border-color: #FF3366;">
+        <button class="profile-btn" onclick="printPDF()" title="Exportar PDF profesional" style="border-color: #FF3366;">
             <svg viewBox="0 0 24 24" fill="none" class="w-6 h-6 text-[#FF3366]" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7 10 12 15 17 10"></polyline>
@@ -566,6 +566,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
+        function printPDF() {
+            // Crea un iframe invisible, carga el PDF dedicado y dispara el diálogo de impresión
+            const existing = document.getElementById('__pdf-frame');
+            if (existing) existing.remove();
+
+            const frame = document.createElement('iframe');
+            frame.id = '__pdf-frame';
+            frame.style.cssText = 'position:fixed;width:1px;height:1px;top:-9999px;left:-9999px;border:none;opacity:0;';
+            frame.src = 'infografia-pdf.html';
+            document.body.appendChild(frame);
+
+            frame.onload = () => {
+                setTimeout(() => {
+                    frame.contentWindow.print();
+                    // Limpiar el iframe después de cerrar el diálogo
+                    setTimeout(() => frame.remove(), 3000);
+                }, 400); // Esperar que los estilos se apliquen
+            };
+        }
+
         async function exportToPDF() {
             const { jsPDF } = window.jspdf;
             const nav = document.getElementById('main-nav');
