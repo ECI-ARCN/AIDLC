@@ -483,8 +483,14 @@
                 gradientTitle.className = 'text-[#4DFFFF] font-extrabold';
             }
 
+            // Eliminar paddings inferiores que causan hoja blanca extra
+            const originalPb = document.body.style.paddingBottom;
+            const originalMb = document.body.style.marginBottom;
+            document.body.style.paddingBottom = '0px';
+            document.body.style.marginBottom = '0px';
+
             const opt = {
-                margin:       5,
+                margin:       [5, 5, 0, 5],
                 filename:     'Infografia_AIDLC_2026.pdf',
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0B132B' },
@@ -506,6 +512,8 @@
                 if (gradientTitle) {
                     gradientTitle.className = originalClasses;
                 }
+                document.body.style.paddingBottom = originalPb;
+                document.body.style.marginBottom = originalMb;
             }
         }
 
