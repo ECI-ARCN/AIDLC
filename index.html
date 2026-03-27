@@ -517,6 +517,9 @@
             const canvasW = canvas.width;
             const canvasH = canvas.height;
 
+            // Cuantos px del canvas corresponden a una página A4 landscape
+            const pageHeightPx = Math.floor((canvasW / PDF_W_PX) * PDF_H_PX);
+
             // ── Algoritmo de corte inteligente ──
             // Busca la fila de píxeles más cercana al límite que sea
             // mayoritariamente oscura (fondo #0B132B), evitando cortar contenido.
