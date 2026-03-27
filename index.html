@@ -517,8 +517,41 @@
             const canvasW = canvas.width;
             const canvasH = canvas.height;
 
-            // Cuantos px corresponden a una pagina A4 en el canvas generado
-            const pageHeightPx = Math.floor(canvasH * (PDF_W_PX / canvasW) / (PDF_W_MM / PDF_H_MM));
+            // ── Algoritmo de corte inteligente ──
+            // Busca la fila de píxeles más cercana al límite que sea
+            // mayoritariamente oscura (fondo #0B132B), evitando cortar contenido.
+            const pixelData = canvas.getContext('2d').getImageData(0, 0, canvasW, canvasH).data;
+
+            function rowDarkness(y) {
+                // Devuelve el porcentaje de píxeles de la fila que son oscuros (<40 luminancia)
+                let dark = 0;
+                const step = Math.max(1, Math.floor(canvasW / 80)); // Muestrea 80 puntos por fila
+                let samples = 0;
+                for (let x = 0; x < canvasW; x += step) {
+                    const idx = (y * canvasW + x) * 4;
+                    const lum = 0.299 * pixelData[idx] + 0.587 * pixelData[idx+1] + 0.114 * pixelData[idx+2];
+                    if (lum < 50) dark++;
+                    samples++;
+                }
+                return samples > 0 ? dark / samples : 0;
+            }
+
+            function findSafeCutRow(idealY, searchPx) {
+                // Busca la fila más oscura dentro del rango [idealY - searchPx, idealY]
+                // Buscamos hacia atrás para no agregar contenido de la siguiente página
+                let bestY = idealY;
+                let bestDark = -1;
+                const from = Math.max(0, idealY - searchPx);
+                for (let y = idealY; y >= from; y--) {
+                    const d = rowDarkness(y);
+                    if (d > bestDark) {
+                        bestDark = d;
+                        bestY = y;
+                        if (d > 0.85) break; // fila casi completamente oscura, suficiente
+                    }
+                }
+                return bestY;
+            }
 
             let yOffset = 0;
             let pageNum = 0;
@@ -526,8 +559,12 @@
             while (yOffset < canvasH) {
                 if (pageNum > 0) pdf.addPage();
 
-                // Crear canvas temporal con el trozo de esta pagina
-                const sliceH = Math.min(pageHeightPx, canvasH - yOffset);
+                // Calcular límite ideal de esta página
+                const idealEnd = yOffset + pageHeightPx;
+                // Buscar un corte natural en los últimos 80px antes del límite
+                const safeCut = idealEnd >= canvasH ? canvasH : findSafeCutRow(Math.min(idealEnd, canvasH - 1), 80);
+                const sliceH = safeCut - yOffset;
+
                 const pageCanvas = document.createElement('canvas');
                 pageCanvas.width = canvasW;
                 pageCanvas.height = pageHeightPx;
@@ -537,18 +574,18 @@
                 ctx.drawImage(canvas, 0, yOffset, canvasW, sliceH, 0, 0, canvasW, sliceH);
 
                 const pageData = pageCanvas.toDataURL('image/jpeg', 0.95);
-                // Margen de 8mm a cada lado
                 const margin = 8;
                 pdf.addImage(pageData, 'JPEG', margin, margin, PDF_W_MM - margin * 2, PDF_H_MM - margin * 2);
 
-                yOffset += pageHeightPx;
+                yOffset = safeCut;
                 pageNum++;
             }
 
-            // Eliminar ultima pagina si quedo casi en blanco (menos del 10% de contenido)
+            // Eliminar ultima pagina si quedo casi en blanco (< 8% de contenido)
             if (pageNum > 1) {
-                const lastSlice = canvasH - (pageNum - 1) * pageHeightPx;
-                if (lastSlice < pageHeightPx * 0.1) {
+                const lastSliceH = canvasH - (pageNum > 1 ? (canvasH - pageHeightPx * (pageNum - 1)) : canvasH);
+                const lastContent = canvasH % pageHeightPx;
+                if (lastContent > 0 && lastContent < pageHeightPx * 0.08) {
                     pdf.deletePage(pageNum);
                 }
             }
