@@ -215,12 +215,16 @@
             background-color: #0B132B !important;
         }
         .pdf-mode header { margin-bottom: 2rem !important; }
-        .pdf-mode main { gap: 1rem !important; }
-        .pdf-mode section { margin-bottom: 1rem !important; }
+        .pdf-mode main { gap: 1.5rem !important; }
+        .pdf-mode section { 
+            margin-bottom: 2rem !important; 
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
         .pdf-mode .card { padding: 1.5rem !important; }
-        .pdf-mode .chart-container { height: 320px !important; }
-        .pdf-mode h1 { font-size: 2.5rem !important; }
-        .pdf-mode h2 { font-size: 1.5rem !important; margin-bottom: 1rem !important; }
+        .pdf-mode .chart-container { height: 350px !important; }
+        .pdf-mode h1 { font-size: 2.2rem !important; }
+        .pdf-mode h2 { font-size: 1.4rem !important; margin-bottom: 1rem !important; }
         .pdf-mode .p-10 { padding: 1.5rem !important; }
     </style>
 </head>
@@ -502,16 +506,22 @@
             }
 
             const opt = {
-                margin:       0,
+                margin:       [10, 0, 10, 0],
                 filename:     'Infografia_AIDLC_2026.pdf',
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0B132B' },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' },
+                html2canvas:  { 
+                    scale: 2, 
+                    useCORS: true, 
+                    backgroundColor: '#0B132B',
+                    windowWidth: 1200
+                },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape', compress: true },
                 pagebreak:    { mode: ['css', 'legacy'] }
             };
 
             try {
-                await html2pdf().set(opt).from(document.body).save();
+                const worker = html2pdf().set(opt).from(document.body).toPdf().get('pdf');
+                await worker.save();
             } catch (err) {
                 console.error('Error al generar PDF: ', err);
             } finally {
