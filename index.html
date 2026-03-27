@@ -21,6 +21,8 @@
             border: 1px solid #3A506B;
             border-radius: 0.75rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            break-inside: avoid;
+            page-break-inside: avoid;
         }
 
         .text-cyan {
@@ -489,11 +491,11 @@
             document.body.style.marginBottom = '0px';
 
             const opt = {
-                margin:       [5, 5, 0, 5],
+                margin:       [10, 10, 10, 10],
                 filename:     'Infografia_AIDLC_2026.pdf',
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0B132B' },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' },
+                jsPDF:        { unit: 'mm', format: 'a3', orientation: 'landscape' },
                 pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
